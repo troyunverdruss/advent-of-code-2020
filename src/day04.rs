@@ -1,7 +1,6 @@
 use crate::util;
 use lazy_static::lazy_static;
 use regex::Regex;
-use std::collections::hash_map::RandomState;
 use std::collections::HashMap;
 
 pub fn run() {
@@ -203,15 +202,3 @@ fn collect_all_passport_data() -> Vec<String> {
     passport_data
 }
 
-fn contains_all_required_fields(line: &str) -> bool {
-    let required_fields = vec!["byr:", "iyr:", "eyr:", "hgt:", "hcl:", "ecl:", "pid:"];
-    let mut all_present = true;
-    for f in required_fields {
-        if !line.contains(f) {
-            all_present = false;
-            break;
-        }
-    }
-
-    all_present
-}

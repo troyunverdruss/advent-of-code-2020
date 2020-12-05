@@ -13,7 +13,7 @@ mod day05;
 mod util;
 
 fn main() {
-    let day = 4;
+    let day = 5;
 
     let mut days: HashMap<i32, fn()> = HashMap::new();
     days.insert(1, day01::run);
