@@ -51,16 +51,16 @@ fn run_through_trees(grid_data: &GridData, slope: &Slope) -> i32 {
     trees
 }
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn part_1_example() {}
-
-    #[test]
-    fn split_example() {
-        let split_str: Vec<String> = "abc".split("").map(String::from).collect();
-        let split_char: Vec<char> = "abc".chars().into_iter().collect();
-
-        let i = 0;
-    }
-}
+// #[cfg(test)]
+// mod tests {
+//     #[test]
+//     fn part_1_example() {}
+//
+//     #[test]
+//     fn split_example() {
+//         let split_str: Vec<String> = "abc".split("").map(String::from).collect();
+//         let split_char: Vec<char> = "abc".chars().into_iter().collect();
+//
+//         let i = 0;
+//     }
+// }
