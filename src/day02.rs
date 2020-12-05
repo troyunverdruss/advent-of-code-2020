@@ -1,39 +1,51 @@
 use crate::util;
-use regex::Regex;
 
 #[derive(Debug)]
 struct PasswordEntry {
-    low: i32,
-    high: i32,
-    letter: String,
+    low: usize,
+    high: usize,
+    letter: char,
     entry: String,
-    matches: i32,
 }
 
 impl PasswordEntry {
-    pub fn valid_for_part_1(&self) -> bool {
-        self.matches >= self.low && self.matches <= self.high
+    fn valid_for_part_1(&self) -> bool {
+        let count = self
+            .entry
+            .chars()
+            .into_iter()
+            .filter(|c| *c == self.letter)
+            .count();
+
+        self.low <= count && count <= self.high
     }
 
-    pub fn valid_for_part_2(&self) -> bool {
-        let low = self.entry.chars().nth((self.low - 1) as usize).unwrap();
-        let high = self.entry.chars().nth((self.high - 1) as usize).unwrap();
+    fn valid_for_part_2(&self) -> bool {
+        let indexes = vec![self.low - 1, self.high - 1];
+        let char_matches = self
+            .entry
+            .chars()
+            .into_iter()
+            .enumerate()
+            .filter(|(i, _)| indexes.contains(i))
+            .map(|(_, c)| c == self.letter)
+            .collect::<Vec<bool>>();
 
-        (low.to_string() == self.letter) ^ (high.to_string() == self.letter)
+        char_matches[0] ^ char_matches[1]
     }
 }
 
 pub fn run() {
-    let password_entries: Vec<PasswordEntry> = util::read_lines(2).iter().map(parse_line).collect();
+    let password_entries: Vec<PasswordEntry> = util::day_input(2).iter().map(parse_line).collect();
 
     let count_1 = password_entries
         .iter()
-        .filter(|pe| pe.valid_for_part_1())
+        .filter(|e| e.valid_for_part_1())
         .count();
 
     let count_2 = password_entries
         .iter()
-        .filter(|pe| pe.valid_for_part_2())
+        .filter(|e| e.valid_for_part_2())
         .count();
 
     println!("Part 1: {}", count_1);
@@ -42,25 +54,24 @@ pub fn run() {
 
 fn parse_line(line: &String) -> PasswordEntry {
     let parts: Vec<String> = line
-        .split(|c| c == '-' || c == ':' || c == ' ')
+        .replace("-", " ")
+        .replace(":", " ")
+        .split(" ")
+        .filter(|e| !e.is_empty())
         .map(String::from)
-        .filter(|s| s.len() > 0)
         .collect();
 
-    let min = parts.get(0).unwrap().parse().expect("Couldn't get min");
-    let max = parts.get(1).unwrap().parse().expect("Couldn't get max");
-    let letter = parts.get(2).expect("Couldn't get letter").to_owned();
-    let entry = parts
-        .get(3)
-        .expect("Couldn't get password entry")
-        .to_owned();
-    let matches = entry.matches(&letter).count() as i32;
+    assert_eq!(4, parts.len(), "Couldn't parse entry!");
+
+    let min = parts.get(0).unwrap().parse().unwrap();
+    let max = parts.get(1).unwrap().parse().unwrap();
+    let letter = parts.get(2).unwrap().chars().nth(0).unwrap();
+    let entry = parts.get(3).unwrap().to_owned();
 
     PasswordEntry {
         low: min,
         high: max,
         letter,
-        matches,
         entry,
     }
 }
