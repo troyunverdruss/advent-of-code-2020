@@ -8,7 +8,7 @@ pub fn run() {
 
 // Solves in O(n^p) time, where p = picks
 fn solver(pick_entries: usize) -> Option<i32> {
-    let input: Vec<i32> = util::read_lines(1)
+    let input: Vec<i32> = util::day_input(1)
         .iter()
         .map(|s| s.parse().expect("unable to parse int"))
         .collect();
