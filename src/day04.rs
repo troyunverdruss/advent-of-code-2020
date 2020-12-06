@@ -13,6 +13,9 @@ fn part_1() {
 
     let required_fields = vec!["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"];
 
+    // Take all the raw data, convert to passport hashes, then
+    // try and get all the required fields, make sure they're all
+    // present, and then count the ones that made it through
     let valid_passports = passport_data
         .iter()
         .map(|pd| to_passport(&pd))

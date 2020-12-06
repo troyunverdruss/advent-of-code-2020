@@ -1,7 +1,5 @@
 use crate::util;
 use itertools::Itertools;
-use std::fmt::{Display, Formatter};
-use std::ops::Index;
 
 pub fn run() {
     // Get input
