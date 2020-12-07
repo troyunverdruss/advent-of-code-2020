@@ -1,5 +1,4 @@
 use crate::util::inputs;
-use itertools::Itertools;
 use combinations::Combinations;
 
 pub fn run() {
