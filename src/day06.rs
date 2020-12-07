@@ -1,10 +1,12 @@
-use crate::util;
-use itertools::Itertools;
 use std::collections::{HashMap, HashSet};
 
+use itertools::Itertools;
+
+use crate::util::inputs;
+
 pub fn run() {
-    let big_line = util::read_lines_to_string(6);
-    let groups = big_line.split("\n\n").collect::<Vec<&str>>();
+    let input = inputs::read_lines_split_by_double_newline(6);
+    let groups: Vec<&str> = input.iter().map(|s| &s[..] ).collect() ;
 
     let part1: usize = groups
         .iter()
@@ -24,12 +26,12 @@ pub fn run() {
     println!("Part 2 (functional): {}", total);
 }
 
-fn part_2(groups: &Vec<&str>) -> usize {
+fn part_2(groups: &[&str]) -> usize {
     let mut total = 0;
     for group in groups {
         let mut answers: HashMap<char, usize> = HashMap::new();
         let people = group
-            .split("\n")
+            .split('\n')
             .filter(|s| !s.is_empty())
             .collect::<Vec<&str>>();
         let group_size = people.len();
@@ -47,12 +49,12 @@ fn part_2(groups: &Vec<&str>) -> usize {
     total
 }
 
-fn part_2_functional(groups: &Vec<&str>) -> usize {
+fn part_2_functional(groups: &[&str]) -> usize {
     groups
         .iter()
         .map(|group| {
             group
-                .split("\n")
+                .split('\n')
                 .filter(|s| !s.is_empty())
                 .collect::<Vec<&str>>()
         })
@@ -77,8 +79,6 @@ fn part_2_functional(groups: &Vec<&str>) -> usize {
 #[cfg(test)]
 mod tests {
     use crate::day06::{part_2, part_2_functional};
-    use itertools::Itertools;
-    use std::collections::HashMap;
 
     #[test]
     fn part_2_test() {
