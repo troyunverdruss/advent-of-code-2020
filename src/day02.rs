@@ -1,4 +1,4 @@
-use crate::util;
+use crate::util::inputs;
 
 #[derive(Debug)]
 struct PasswordEntry {
@@ -36,7 +36,11 @@ impl PasswordEntry {
 }
 
 pub fn run() {
-    let password_entries: Vec<PasswordEntry> = util::day_input(2).iter().map(parse_line).collect();
+    let password_entries: Vec<PasswordEntry> = inputs::day_input(2)
+        .iter()
+        .map(|s| &s[..])
+        .map(parse_line)
+        .collect();
 
     let count_1 = password_entries
         .iter()
@@ -52,11 +56,11 @@ pub fn run() {
     println!("Part 2: {}", count_2);
 }
 
-fn parse_line(line: &String) -> PasswordEntry {
+fn parse_line(line: &str) -> PasswordEntry {
     let parts: Vec<String> = line
         .replace("-", " ")
         .replace(":", " ")
-        .split(" ")
+        .split(' ')
         .filter(|e| !e.is_empty())
         .map(String::from)
         .collect();
@@ -65,7 +69,7 @@ fn parse_line(line: &String) -> PasswordEntry {
 
     let min = parts.get(0).unwrap().parse().unwrap();
     let max = parts.get(1).unwrap().parse().unwrap();
-    let letter = parts.get(2).unwrap().chars().nth(0).unwrap();
+    let letter = parts.get(2).unwrap().chars().next().unwrap();
     let entry = parts.get(3).unwrap().to_owned();
 
     PasswordEntry {

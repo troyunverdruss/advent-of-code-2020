@@ -1,8 +1,7 @@
-use crate::util;
-use crate::util::{GridData, Point};
+use crate::util::{GridData, inputs, Point};
 
 pub fn run() {
-    let lines = util::day_input(3);
+    let lines = inputs::day_input(3);
     let input = GridData::parse_input(lines);
 
     let trees = run_through_trees(&input, &Slope { dx: 3, dy: 1 });

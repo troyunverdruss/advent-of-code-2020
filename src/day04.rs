@@ -1,7 +1,9 @@
-use crate::util;
+use std::collections::HashMap;
+
 use lazy_static::lazy_static;
 use regex::Regex;
-use std::collections::HashMap;
+
+use crate::util::inputs;
 
 pub fn run() {
     part_1();
@@ -9,7 +11,7 @@ pub fn run() {
 }
 
 fn part_1() {
-    let passport_data = collect_all_passport_data();
+    let passport_data = inputs::read_lines_split_by_double_newline(4);
 
     let required_fields = vec!["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"];
 
@@ -32,7 +34,7 @@ fn part_1() {
 }
 
 fn part_2() {
-    let passport_data = collect_all_passport_data();
+    let passport_data = inputs::read_lines_split_by_double_newline(4);
 
     let valid_passports = passport_data
         .iter()
@@ -49,13 +51,14 @@ fn to_passport(data: &str) -> HashMap<&str, String> {
     data.split_ascii_whitespace()
         .filter(|f| !f.is_empty())
         .for_each(|f| {
-            let parts: Vec<&str> = f.split(":").collect();
+            let parts: Vec<&str> = f.split(':').collect();
             passport.insert(parts[0], parts[1].to_owned());
         });
 
     passport
 }
 
+// TODO refactor these to be cleaner with regex + functional maybe
 fn part_2_valid_passports(passport: &HashMap<&str, String>) -> bool {
     // byr (Birth Year) - four digits; at least 1920 and at most 2002.
     let byr = valid_byr(&passport.get("byr"));
@@ -132,13 +135,12 @@ fn valid_hgt(hgt: &Option<&String>) -> bool {
     let val = height[..len - 2].parse::<i32>().unwrap();
     let unit = &height[len - 2..];
 
-    let valid = match unit {
+    // Return if it's valid from the let
+    match unit {
         "cm" => (150 <= val) && (val <= 193),
         "in" => (59 <= val) && (val <= 76),
         _ => false,
-    };
-
-    valid
+    }
 }
 
 fn valid_hcl(hcl: &Option<&String>) -> bool {
@@ -182,26 +184,5 @@ fn valid_pid(pid: &Option<&String>) -> bool {
         static ref RE: Regex = Regex::new(r"^[0-9]{9}$").unwrap();
     }
     RE.is_match(&passport_id)
-}
-
-fn collect_all_passport_data() -> Vec<String> {
-    let lines = util::day_input(4);
-
-    let mut passport_data: Vec<String> = Vec::new();
-    let mut single_passport: String = String::new();
-
-    for line in lines {
-        if line.is_empty() {
-            passport_data.push(single_passport.clone());
-            single_passport.clear();
-        }
-
-        single_passport.push_str(&line);
-        single_passport.push_str(" ");
-    }
-
-    // Get the last one that was being built in progress
-    passport_data.push(single_passport);
-    passport_data
 }
 
