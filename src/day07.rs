@@ -9,6 +9,10 @@ pub fn run() {
     let all_bags = parse_all_bags(lines);
     let count = count_gold_bags(&all_bags);
     println!("Part 1: bags that can hold gold {}", count);
+
+    let gold_holds = find_all_held_bags("shiny gold", &all_bags);
+    println!("Part 2: shiny gold holds {}", gold_holds.len());
+
 }
 
 fn count_gold_bags(all_bags: &HashMap<String, HashMap<String, usize>>) -> usize {
@@ -26,6 +30,24 @@ fn count_gold_bags(all_bags: &HashMap<String, HashMap<String, usize>>) -> usize 
         .filter(|b| b == &true)
         .count();
     count
+}
+
+// TODO this is the one i should have memoized
+fn find_all_held_bags(
+    main_bag: &str,
+    all_bags: &HashMap<String, HashMap<String, usize>>
+) -> Vec<String> {
+    let mut results = Vec::new();
+    if let Some(held_bags) = all_bags.get(main_bag) {
+        for held_bag in held_bags.keys() {
+            for _ in 0..*held_bags.get(held_bag).unwrap() {
+                results.push(held_bag.to_owned());
+                results.append(&mut find_all_held_bags(held_bag, all_bags))
+            }
+        }
+    }
+
+    results
 }
 
 fn parse_all_bags(lines: Vec<String>) -> HashMap<String, HashMap<String, usize>> {
@@ -118,16 +140,16 @@ mod tests {
     #[test]
     fn test_1() {
         let lines = vec![
-            "light red bags contain 1 bright white bag, 2 muted yellow bags.".to_owned(),
-            "dark orange bags contain 3 bright white bags, 4 muted yellow bags.".to_owned(),
-            "bright white bags contain 1 shiny gold bag.".to_owned(),
-            "muted yellow bags contain 2 shiny gold bags, 9 faded blue bags.".to_owned(),
-            "shiny gold bags contain 1 dark olive bag, 2 vibrant plum bags.".to_owned(),
-            "dark olive bags contain 3 faded blue bags, 4 dotted black bags.".to_owned(),
-            "vibrant plum bags contain 5 faded blue bags, 6 dotted black bags.".to_owned(),
-            "faded blue bags contain no other bags.".to_owned(),
-            "dotted black bags contain no other bags.".to_owned(),
-        ];
+            "light red bags contain 1 bright white bag, 2 muted yellow bags.",
+            "dark orange bags contain 3 bright white bags, 4 muted yellow bags.",
+            "bright white bags contain 1 shiny gold bag.",
+            "muted yellow bags contain 2 shiny gold bags, 9 faded blue bags.",
+            "shiny gold bags contain 1 dark olive bag, 2 vibrant plum bags.",
+            "dark olive bags contain 3 faded blue bags, 4 dotted black bags.",
+            "vibrant plum bags contain 5 faded blue bags, 6 dotted black bags.",
+            "faded blue bags contain no other bags.",
+            "dotted black bags contain no other bags.",
+        ].iter().map(|f| String::from(*f)).collect::<Vec<String>>();
 
         let all_bags = parse_all_bags(lines);
         let count = count_gold_bags(&all_bags);
