@@ -15,10 +15,12 @@ mod day05;
 mod day06;
 mod day07;
 mod day08;
+mod day09;
+mod day10;
 mod util;
 
 fn main() {
-    let _day = 8;
+    let _day = 10;
 
     let mut days: HashMap<i32, fn()> = HashMap::new();
     days.insert(1, day01::run);
@@ -29,6 +31,8 @@ fn main() {
     days.insert(6, day06::run);
     days.insert(7, day07::run);
     days.insert(8, day08::run);
+    days.insert(9, day09::run);
+    days.insert(10, day10::run);
 
     if let Some(f) = days.get(&_day) {
         f()
