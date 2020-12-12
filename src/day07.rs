@@ -23,8 +23,8 @@ fn count_gold_bags(all_bags: &HashMap<String, HashMap<String, usize>>) -> usize 
         .keys()
         .map(|bag| {
             let result = find_gold_bags(bag, &all_bags, &mut memo, 0);
-            println!("{} held shiny gold: {}", bag, result);
-            println!();
+            // println!("{} held shiny gold: {}", bag, result);
+            // println!();
             result
         })
         .filter(|b| b == &true)
@@ -95,24 +95,24 @@ fn find_gold_bags(
     memo: &mut HashMap<String, bool>,
     depth: usize,
 ) -> bool {
-    println!("{} Checking bag: {}", depth, main_bag);
+    // println!("{} Checking bag: {}", depth, main_bag);
 
     // If we've seen this before, just return that
     if let Some(known) = memo.get(main_bag) {
-        println!(" Found result in memo: {} = {}", main_bag, known);
+        // println!(" Found result in memo: {} = {}", main_bag, known);
         return known.to_owned();
     } else {
-        println!("  memo: haven't found solution for {} yet ", main_bag)
+        // println!("  memo: haven't found solution for {} yet ", main_bag)
     }
 
     let mut found_gold = HashSet::new();
     let main_bag_holds_these_bags = all_bags.get(main_bag);
-    println!("  holds: {:?}", main_bag_holds_these_bags.unwrap().keys());
+    // println!("  holds: {:?}", main_bag_holds_these_bags.unwrap().keys());
     if let Some(held_bags) = main_bag_holds_these_bags {
         for held_bag in held_bags.keys() {
             if held_bag == "shiny gold" {
                 found_gold.insert(true);
-                println!("  memo: inserting {} contains gold: true", main_bag);
+                // println!("  memo: inserting {} contains gold: true", main_bag);
                 break;
             } else {
                 let result = find_gold_bags(held_bag, all_bags, memo, depth + 1);
