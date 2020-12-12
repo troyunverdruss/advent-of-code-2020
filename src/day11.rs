@@ -3,6 +3,7 @@ use crate::util::{GridData, Point};
 use itertools::Itertools;
 use std::collections::HashMap;
 
+// TODO why so slow? 
 pub fn run() {
     let input_lines = day_input(11);
     let grid_data = GridData::parse_input(input_lines);
