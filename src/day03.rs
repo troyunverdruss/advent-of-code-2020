@@ -40,7 +40,7 @@ fn run_through_trees(grid_data: &GridData, slope: &Slope) -> i32 {
         };
 
         let val = grid_data.map.get(&coord).unwrap();
-        if val == "#" {
+        if val == &'#' {
             trees += 1;
         }
 

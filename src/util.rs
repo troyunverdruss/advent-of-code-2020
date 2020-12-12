@@ -9,7 +9,7 @@ pub struct Point {
 }
 
 pub struct GridData {
-    pub(crate) map: HashMap<Point, String>,
+    pub(crate) map: HashMap<Point, char>,
     pub(crate) rows: usize,
     pub(crate) cols: usize,
 }
@@ -19,7 +19,7 @@ impl GridData {
         let mut map = HashMap::new();
         for (y, line) in lines.iter().enumerate() {
             for (x, entry) in line.chars().into_iter().enumerate() {
-                map.insert(Point { x: x as i32, y: y as i32 }, String::from(entry));
+                map.insert(Point { x: x as i32, y: y as i32 }, entry);
                 // println! {"{:?}{}", Point { x, y }, entry.to_owned()}
             }
         }
