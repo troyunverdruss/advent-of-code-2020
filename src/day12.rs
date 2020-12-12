@@ -6,6 +6,7 @@ static SOUTH: Point = Point { x: 0, y: -1 };
 static EAST: Point = Point { x: 1, y: 0 };
 static WEST: Point = Point { x: -1, y: 0 };
 
+// TODO complex numbers? 
 pub fn run() {
     let lines = day_input(12);
     let instructions = parse_to_instructions(lines);
