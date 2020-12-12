@@ -1,6 +1,4 @@
 use std::collections::HashMap;
-use std::io;
-use std::io::Write;
 
 pub(crate) mod inputs;
 

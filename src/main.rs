@@ -18,10 +18,11 @@ mod day08;
 mod day09;
 mod day10;
 mod day11;
+mod day12;
 mod util;
 
 fn main() {
-    let _day = 11;
+    let _day = 12;
 
     let mut days: HashMap<i32, fn()> = HashMap::new();
     days.insert(1, day01::run);
@@ -35,19 +36,20 @@ fn main() {
     days.insert(9, day09::run);
     days.insert(10, day10::run);
     days.insert(11, day11::run);
+    days.insert(12, day12::run);
 
-    if let Some(f) = days.get(&_day) {
-        let now = Instant::now();
-        f();
-        println!("Elapsed: {}", now.elapsed().as_millis());
-    };
-
-    // Run all the days in order
-    // days.iter().sorted().for_each(|e| {
-    //     println!("Day {}", e.0);
+    // if let Some(f) = days.get(&_day) {
     //     let now = Instant::now();
-    //     e.1();
+    //     f();
     //     println!("Elapsed: {}", now.elapsed().as_millis());
-    //     println!();
-    // })
+    // };
+    //
+    // Run all the days in order
+    days.iter().sorted().for_each(|e| {
+        println!("Day {}", e.0);
+        let now = Instant::now();
+        e.1();
+        println!("Elapsed: {}", now.elapsed().as_millis());
+        println!();
+    })
 }
