@@ -18,10 +18,10 @@ fn part1(numbers: &Vec<i64>, preamble: usize) -> i64 {
         let mut pre = vec![0; preamble];
         pre.clone_from_slice(&numbers[i - preamble..i]);
 
-        println!("slice: {:?}", pre);
+        // println!("slice: {:?}", pre);
 
         let target = numbers[i];
-        println!("target: {:?}", target);
+        // println!("target: {:?}", target);
 
         let candidates = pre
             .iter()
@@ -29,7 +29,7 @@ fn part1(numbers: &Vec<i64>, preamble: usize) -> i64 {
             .copied()
             .collect::<Vec<i64>>();
 
-        println!("candidates: {:?}", candidates);
+        // println!("candidates: {:?}", candidates);
 
         let valid = candidates.iter().any(|c| {
             let pair = target - c;
@@ -38,7 +38,7 @@ fn part1(numbers: &Vec<i64>, preamble: usize) -> i64 {
             } else {
                 candidates.contains(&pair)
             };
-            println!("{}+{}={} valid: {}", c, pair, target, res);
+            // println!("{}+{}={} valid: {}", c, pair, target, res);
             res
         });
 
@@ -59,21 +59,21 @@ fn part2(numbers: &[i64], target_invalid_number: i64) -> i64 {
         })
         .collect::<Vec<i64>>();
 
-    println!("Target number: {}", target_invalid_number);
-    println!("Part 2 numbers    : {:?}", numbers);
-    println!("Part 2 number sums: {:?}", sums_in_position);
+    // println!("Target number: {}", target_invalid_number);
+    // println!("Part 2 numbers    : {:?}", numbers);
+    // println!("Part 2 number sums: {:?}", sums_in_position);
 
     for end in 0..sums_in_position.len() {
         for start in 0..end {
             if sums_in_position[end] - sums_in_position[start] == target_invalid_number {
-                println!("Index {}..{}", start, end);
-                println!("Sum {}..{}", numbers[end], numbers[start + 1]);
+                // println!("Index {}..{}", start, end);
+                // println!("Sum {}..{}", numbers[end], numbers[start + 1]);
 
                 let min = numbers[start + 1..end].iter().min().unwrap();
                 let max = numbers[start + 1..end].iter().max().unwrap();
 
                 let sum = min + max;
-                println!("Sum: {}", sum);
+                // println!("Sum: {}", sum);
                 return sum;
             }
         }
