@@ -1,11 +1,13 @@
 use std::collections::HashMap;
+use std::io;
+use std::io::Write;
 
 pub(crate) mod inputs;
 
-#[derive(PartialEq, Eq, Hash, Debug)]
+#[derive(PartialEq, Eq, Hash, Debug, Clone, Ord, PartialOrd)]
 pub struct Point {
-    pub(crate) x: usize,
-    pub(crate) y: usize,
+    pub(crate) x: i32,
+    pub(crate) y: i32,
 }
 
 pub struct GridData {
@@ -19,7 +21,7 @@ impl GridData {
         let mut map = HashMap::new();
         for (y, line) in lines.iter().enumerate() {
             for (x, entry) in line.chars().into_iter().enumerate() {
-                map.insert(Point { x, y }, String::from(entry));
+                map.insert(Point { x: x as i32, y: y as i32 }, String::from(entry));
                 // println! {"{:?}{}", Point { x, y }, entry.to_owned()}
             }
         }
@@ -35,9 +37,10 @@ impl GridData {
     pub fn debug_print(&self) {
         for y in 0..self.rows {
             for x in 0..self.cols {
-                print!("{}", self.map.get(&Point { x, y }).unwrap())
+                print!("{}", self.map.get(&Point  { x: x as i32, y: y as i32 }).unwrap())
             }
             println!();
         }
+        println!()
     }
 }

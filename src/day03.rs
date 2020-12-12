@@ -23,20 +23,20 @@ pub fn run() {
 }
 
 struct Slope {
-    dx: usize,
-    dy: usize,
+    dx: i32,
+    dy: i32,
 }
 
 fn run_through_trees(grid_data: &GridData, slope: &Slope) -> i32 {
     let mut trees = 0;
-    let mut x = 0;
+    let mut x: i32 = 0;
 
     // input.debug_print();
 
-    for y in (0..grid_data.rows).step_by(slope.dy) {
+    for y in (0..grid_data.rows).step_by(slope.dy as usize) {
         let coord = Point {
-            x: x % grid_data.cols,
-            y,
+            x: x % grid_data.cols as i32,
+            y: y as i32,
         };
 
         let val = grid_data.map.get(&coord).unwrap();

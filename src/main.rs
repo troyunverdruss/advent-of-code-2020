@@ -17,10 +17,11 @@ mod day07;
 mod day08;
 mod day09;
 mod day10;
+mod day11;
 mod util;
 
 fn main() {
-    let _day = 10;
+    let _day = 11;
 
     let mut days: HashMap<i32, fn()> = HashMap::new();
     days.insert(1, day01::run);
@@ -33,9 +34,12 @@ fn main() {
     days.insert(8, day08::run);
     days.insert(9, day09::run);
     days.insert(10, day10::run);
+    days.insert(11, day11::run);
 
     if let Some(f) = days.get(&_day) {
-        f()
+        let now = Instant::now();
+        f();
+        println!("Elapsed: {}", now.elapsed().as_millis());
     };
 
     // Run all the days in order

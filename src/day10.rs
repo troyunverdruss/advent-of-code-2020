@@ -47,7 +47,10 @@ fn part_1(adapters: &Vec<i32>) -> i32 {
 
 fn part_2(adapters: &Vec<i32>) -> i64 {
     let mut memo = HashMap::new();
-    solver(&0, &adapters[..], &mut memo).unwrap()
+    let result = solver(&0, &adapters[..], &mut memo).unwrap();
+    println!("memo size: {}", memo.len());
+    result
+
 }
 
 fn solver(
