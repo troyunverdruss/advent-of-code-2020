@@ -2,32 +2,31 @@ use crate::util::inputs::day_input;
 use crate::util::{GridData, Point};
 use itertools::Itertools;
 use std::collections::HashMap;
-use std::io;
-use std::io::Write;
 
 pub fn run() {
     let input_lines = day_input(11);
     let grid_data = GridData::parse_input(input_lines);
+
     let part1 = part_1(&grid_data);
     println!("Part 1: {}", part1);
+
     let part2 = part_2(&grid_data);
     println!("Part 2: {}", part2);
 }
 
 fn part_1(grid_data: &GridData) -> usize {
-    let mut a = HashMap::new();
-    let mut b = HashMap::new();
+    let mut a;
+    let mut b;
     let mut memo = HashMap::new();
     let mut target_a = true;
 
     a = grid_data.map.clone();
     b = grid_data.map.clone();
     // let mut last_arrangement = grid_data.map.iter().sorted().map(|e| e.1).join("-");
-    let mut loop_count = 0;
-    let mut changes = 0;
+    let mut changes;
     loop {
         changes = 0;
-        let (mut src, mut dest) = if target_a {
+        let (src, dest) = if target_a {
             (&mut b, &mut a)
         } else {
             (&mut a, &mut b)
@@ -45,14 +44,7 @@ fn part_1(grid_data: &GridData) -> usize {
                 .map(|s| s.unwrap().to_owned())
                 .collect::<Vec<String>>();
 
-            let empty_count = neighbors
-                .iter()
-                .filter(|n| n.chars().next().unwrap() == '.' || n.chars().next().unwrap() == 'L')
-                .count();
-            let occupied_count = neighbors
-                .iter()
-                .filter(|n| n.chars().next().unwrap() == '#')
-                .count();
+            let occupied_count = neighbors.iter().filter(|n| n.starts_with('#')).count();
 
             let current_seat = src.get(key).unwrap().chars().next().unwrap();
 
@@ -89,30 +81,22 @@ fn part_1(grid_data: &GridData) -> usize {
         if changes == 0 {
             return dest.iter().map(|e| e.1).filter(|v| v == &"#").count();
         }
-        loop_count += 1;
-        // last_arrangement = current_arrangement;
-
-        // if loop_count == 3 {
-        //     break;
-        // }
     }
-    0
 }
 
 fn part_2(grid_data: &GridData) -> usize {
-    let mut a = HashMap::new();
-    let mut b = HashMap::new();
+    let mut a ;
+    let mut b ;
     let mut memo = HashMap::new();
     let mut target_a = true;
 
     a = grid_data.map.clone();
     b = grid_data.map.clone();
     // let mut last_arrangement = grid_data.map.iter().sorted().map(|e| e.1).join("-");
-    let mut loop_count = 0;
-    let mut changes = 0;
+    let mut changes;
     loop {
         changes = 0;
-        let (mut src, mut dest) = if target_a {
+        let (src, dest) = if target_a {
             (&mut b, &mut a)
         } else {
             (&mut a, &mut b)
@@ -135,10 +119,7 @@ fn part_2(grid_data: &GridData) -> usize {
                 .map(|s| s.unwrap().to_owned())
                 .collect::<Vec<String>>();
 
-            let occupied_count = neighbors
-                .iter()
-                .filter(|n| n.chars().next().unwrap() == '#')
-                .count();
+            let occupied_count = neighbors.iter().filter(|n| n.starts_with('#')).count();
 
             let current_seat = src.get(key).unwrap().chars().next().unwrap();
 
@@ -171,19 +152,10 @@ fn part_2(grid_data: &GridData) -> usize {
         // println!();
 
         target_a = !target_a;
-        // let current_arrangement = dest.iter().sorted().map(|e| e.1).join("-");
-        // if current_arrangement == last_arrangement {
         if changes == 0 {
             return dest.iter().map(|e| e.1).filter(|v| v == &"#").count();
         }
-        loop_count += 1;
-        // last_arrangement = current_arrangement;
-
-        // if loop_count == 3 {
-        //     break;
-        // }
     }
-    0
 }
 
 fn adjacent_neighbors(point: &Point, memo: &mut HashMap<Point, Vec<Point>>) -> Vec<Point> {
@@ -265,8 +237,7 @@ fn visible_neighbors(
             match map.get(&test_point) {
                 None => break,
                 Some(entry) => {
-                    if entry.chars().next().unwrap() == 'L' || entry.chars().next().unwrap() == '#'
-                    {
+                    if entry.starts_with('L') || entry.starts_with('#') {
                         results.push(test_point);
                         break;
                     } else {
@@ -310,7 +281,7 @@ mod tests {
 
     #[test]
     fn test_part_2() {
-        let lines = LINES.iter().map((|s| String::from(*s))).collect();
+        let lines = LINES.iter().map(|s| String::from(*s)).collect();
         let grid_data = GridData::parse_input(lines);
 
         let count = part_2(&grid_data);

@@ -1,11 +1,9 @@
 use crate::util::inputs::day_input;
 use itertools::Itertools;
 use std::collections::HashMap;
-use std::error::Error;
-use std::io;
 
 pub fn run() {
-    let mut adapters = day_input(10)
+    let adapters = day_input(10)
         .iter()
         .map(|s| s.parse::<i32>().unwrap())
         .sorted()
@@ -18,7 +16,7 @@ pub fn run() {
     println!("Part 2: {}", part2);
 }
 
-fn part_1(adapters: &Vec<i32>) -> i32 {
+fn part_1(adapters: &[i32]) -> i32 {
     let mut results = HashMap::new();
     results.insert(1, 0);
     results.insert(2, 0);
@@ -50,7 +48,6 @@ fn part_2(adapters: &Vec<i32>) -> i64 {
     let result = solver(&0, &adapters[..], &mut memo).unwrap();
     println!("memo size: {}", memo.len());
     result
-
 }
 
 fn solver(
@@ -68,7 +65,11 @@ fn solver(
     let result = if remaining.is_empty() {
         Some(1)
     } else {
-        let next_steps: Vec<i32> = remaining.iter().map(|v| *v).filter(|v| *v - current <= 3).collect();
+        let next_steps: Vec<i32> = remaining
+            .iter()
+            .map(|v| *v)
+            .filter(|v| *v - current <= 3)
+            .collect();
         assert!(next_steps.len() <= 3);
 
         if next_steps.len() == 0 {
@@ -76,7 +77,7 @@ fn solver(
         } else {
             let mut sum = 0;
             for (index, value) in next_steps.iter().enumerate() {
-                let result = solver(value, &remaining[index+1..], memo);
+                let result = solver(value, &remaining[index + 1..], memo);
                 if let Some(val) = result {
                     sum += val;
                 }
@@ -87,7 +88,6 @@ fn solver(
                 Some(sum)
             }
         }
-
     };
 
     memo.insert(key.to_owned(), result.to_owned());
