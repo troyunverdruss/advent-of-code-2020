@@ -10,6 +10,10 @@ pub fn run() {
     println!("Part 2, 2020th number: {}", result);
 }
 
+// TODO could maybe do this without storing several values in each key
+//  and instead just keep the last seen number "out" of the hash until
+//  i'm done with it, older entries stay in the hash and then when i'm done
+//  with the calculation i could stuff the "last seen" number value in.
 fn part1(starting_numbers: &[usize], target: usize) -> usize {
     let mut numbers = HashMap::new();
     let mut last_number = *starting_numbers.get(0).unwrap();
