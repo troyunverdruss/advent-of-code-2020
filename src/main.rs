@@ -23,10 +23,11 @@ mod day13;
 mod day14;
 mod day15;
 mod day16;
+mod day17;
 mod util;
 
 fn main() {
-    let _day = 16;
+    let _day = 17;
 
     let mut days: HashMap<i32, fn()> = HashMap::new();
     days.insert(1, day01::run);
@@ -45,6 +46,7 @@ fn main() {
     days.insert(14, day14::run);
     days.insert(15, day15::run);
     days.insert(16, day16::run);
+    days.insert(17, day17::run);
 
 
     if let Some(f) = days.get(&_day) {

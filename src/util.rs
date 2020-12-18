@@ -8,6 +8,33 @@ pub struct Point {
     pub(crate) y: i32,
 }
 
+#[derive(PartialEq, Eq, Hash, Debug, Clone, Ord, PartialOrd)]
+pub struct Point3 {
+    pub(crate) x: i32,
+    pub(crate) y: i32,
+    pub(crate) z: i32,
+}
+
+impl Point3 {
+    pub fn from2d(point: &Point) -> Point3 {
+        Point3 { x: point.x, y: point.y, z: 0}
+    }
+}
+
+#[derive(PartialEq, Eq, Hash, Debug, Clone, Ord, PartialOrd)]
+pub struct Point4 {
+    pub(crate) x: i32,
+    pub(crate) y: i32,
+    pub(crate) z: i32,
+    pub(crate) w: i32,
+}
+
+impl Point4 {
+    pub fn from2d(point: &Point) -> Point4 {
+        Point4 { x: point.x, y: point.y, z: 0, w: 0}
+    }
+}
+
 pub struct GridData {
     pub(crate) map: HashMap<Point, char>,
     pub(crate) rows: usize,
