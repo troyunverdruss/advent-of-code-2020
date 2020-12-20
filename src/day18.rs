@@ -279,6 +279,16 @@ mod tests {
     }
 
     #[test]
+    fn part_2_2() {
+        let line = "3 + 9 + 63 + 9";
+        assert_eq!(84, part_2_reducer(line).parse::<i64>().unwrap());
+        let line = "63 + 9 + 3 + 9";
+        assert_eq!(84, part_2_reducer(line).parse::<i64>().unwrap());
+    }
+
+
+
+    #[test]
     fn test_part2() {
         let lines = "\
 1 + 2 * 3 + 4 * 5 + 6
