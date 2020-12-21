@@ -26,6 +26,7 @@ mod day16;
 mod day17;
 mod day18;
 mod day19;
+mod day20;
 mod util;
 
 fn main() {
@@ -51,6 +52,7 @@ fn main() {
     days.insert(17, day17::run);
     days.insert(18, day18::run);
     days.insert(19, day19::run);
+    days.insert(20, day20::run);
 
 
     if let Some(f) = days.get(&_day) {
