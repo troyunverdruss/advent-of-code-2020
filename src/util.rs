@@ -8,6 +8,12 @@ pub struct Point {
     pub(crate) y: i32,
 }
 
+impl Point {
+    pub fn new(x: i32, y: i32) -> Point {
+        Point {x, y}
+    }
+}
+
 #[derive(PartialEq, Eq, Hash, Debug, Clone, Ord, PartialOrd)]
 pub struct Point3 {
     pub(crate) x: i32,
