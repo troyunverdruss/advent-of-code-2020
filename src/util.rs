@@ -35,6 +35,7 @@ impl Point4 {
     }
 }
 
+#[derive(PartialEq, Eq, Debug, Clone)]
 pub struct GridData {
     pub(crate) map: HashMap<Point, char>,
     pub(crate) rows: usize,
