@@ -79,19 +79,9 @@ pub fn run() {
     println!("Part 1: {}", part1_product);
     println!("  sums: {}", sum);
 
-    let (start, start_edge_matches) = tiles_to_edges
-        .iter()
-        .filter(|e| e.1.len() == 2)
-        .next()
-        .unwrap();
+    // part 2
 
-    let all_starts = tiles_to_edges
-        .iter()
-        .filter(|e| e.1.len() == 2)
-        .map(|e| e.1.clone())
-        .collect::<Vec<Vec<EdgeMatch>>>();
-
-    let mut map: HashMap<Point, MapPosition> = HashMap::new();
+    let start = &(3359 as i64);
 
     let mut filled_map: HashMap<Point, char> = HashMap::new();
     let mut last_right = String::new();
@@ -99,11 +89,14 @@ pub fn run() {
     let mut used_tiles: HashSet<i64> = HashSet::new();
     for y in 0..12 {
         for x in 0..12 {
+            println!("Used entries: {}", used_tiles.len());
+            // println!("Used entries: {:?}", used_tiles);
             let offset = Point::new(x * 10, y * 10);
-            println!("full grid entry: {:?}", offset);
+            // println!("full grid entry: {:?}", offset);
             let here = Point::new(x, y);
-            println!("here: {:?}", here);
-            println!("last right: {}", last_right);
+            // println!("here: {:?}", here);
+            // println!("last right: {}", last_right);
+            // println!("last bottom: {}", last_bottom);
             // Get this thing started
             if x == 0 && y == 0 {
                 let tile = lookup.get(start).unwrap();
@@ -117,7 +110,7 @@ pub fn run() {
                 let mut flip_x = false;
                 let mut flip_y = false;
 
-                if edge1_side == Left || edge2_side == Left{
+                if edge1_side == Left || edge2_side == Left {
                     flip_y = true;
                 }
                 if edge1_side == Top || edge2_side == Top {
@@ -126,208 +119,140 @@ pub fn run() {
 
                 let flipped = flip_grid(&tile.grid_data.map, flip_x, flip_y);
                 add_to_main_grid(&mut filled_map, &offset, &flipped);
+
                 last_right = get_right(&flipped);
                 last_bottom = get_bottom(&flipped);
-                used_tiles.insert(tile.id);
-                //
-                // let orientation = getOrientation(flip_x, flip_y);
-                //
-                // let position = MapPosition {
-                //     id: *start,
-                //     orientation: orientation.clone(),
-                //     rotation: 0,
-                // };
-                //
-                println!("{:?} {:?}", &offset, tile.id);
-                // debug_print(&tile.grid_data.map, &Orientation::Default, 0);
-                print_grid(&filled_map);
-                let i = 0;
 
-            // map.insert(here, position);
+                used_tiles.insert(tile.id);
+            // println!("{:?} {:?}", &offset, tile.id);
+            // print_grid(&filled_map);
+            // let i = 0;
             } else if x == 0 {
                 // Otherwise look up if we're at the start of the row
-                let up_pos = map.get(&Point::new(x, y - 1)).unwrap();
-                let up_tile = lookup.get(&up_pos.id).unwrap();
-                let up_edges = tiles_to_edges.get(&up_tile.id).unwrap();
-                let bottom_edge = &up_tile.right(&up_pos.orientation);
-
-                let edge_match = up_edges.iter().find(|e| e.edge == *bottom_edge).unwrap();
-
-                let this_tile = lookup.get(&edge_match.other_id).unwrap();
-
-                let required_orientation = get_required_orientation(bottom_edge, this_tile);
-                let which_side = this_tile.which_side(&required_orientation, bottom_edge);
-                let required_rotations = get_required_rotations(&which_side, &Top);
-
-                map.insert(
-                    here,
-                    MapPosition {
-                        id: this_tile.id,
-                        orientation: required_orientation,
-                        rotation: required_rotations,
-                    },
-                );
-            } else {
-                let mut possible_tile: Option<Tile> = None;
-                let mut possible_grid: Option<HashMap<Point, char>> = None;
-                let mut flip_x = false;
-                let mut flip_y = false;
+                let mut this_tile = None;
+                let mut this_grid = None;
                 for tile in &tiles {
-                    // if used_tiles.contains(&tile.id) {
-                    //     println!("used tiles: {:?}, contains: {}", used_tiles, tile.id);
-                    //     continue;
-                    // }
-                    //
-                    // let mut grid = tile.grid_data.map.clone();
-                    // let mut left = get_left(&grid);
-                    // let mut rots = 0;
-                    // let mut never_found = false;
-                    // if left == last_right {
-                    //     possible_tile = Some(tile.clone());
-                    //     possible_grid = Some(grid.clone());
-                    // }
-                    // while left != last_right {
-                    //     // println!("rotate");
-                    //     grid = rotate_grid(&grid);
-                    //     left = get_left(&grid);
-                    //     rots += 1;
-                    //     if rots >= 10{
-                    //         grid = flip_grid(&tile.grid_data.map, true, false);
-                    //     }
-                    //     if rots >= 20 {
-                    //         grid = flip_grid(&tile.grid_data.map, false, true);
-                    //     }
-                    //     if rots >= 30 {
-                    //         grid = flip_grid(&tile.grid_data.map, true, true);
-                    //     }
-                    //     if rots >= 40 {
-                    //         never_found = true;
-                    //         break;
-                    //     }
-                    // }
-                    // if !never_found {
-                    //     possible_tile = Some(tile.clone());
-                    //     possible_grid = Some(grid.clone());
-                    //     break;
-                    // }
-
-                    if grid_has_edge(&tile.grid_data.map, &last_right) {
-                        possible_tile = Some(tile.clone());
-                        break;
-                    } else if grid_has_edge(
-                        &flip_grid(&tile.grid_data.map, true, false),
-                        &last_right,
-                    ) {
-                        possible_tile = Some(tile.clone());
-                        flip_x = true;
-                        break;
-                    } else if grid_has_edge(
-                        &flip_grid(&tile.grid_data.map, false, true),
-                        &last_right,
-                    ) {
-                        possible_tile = Some(tile.clone());
-                        flip_y = true;
-                        break;
-                    } else if grid_has_edge(
-                        &flip_grid(&tile.grid_data.map, true, true),
-                        &last_right,
-                    ) {
-                        possible_tile = Some(tile.clone());
-                        flip_x = true;
-                        flip_y = true;
-                        break;
-                    } else {
-                        // no match
+                    if used_tiles.contains(&tile.id) {
+                        // println!("Skipping {}", tile.id);
+                        continue;
+                    }
+                    let mut grid = tile.grid_data.map.clone();
+                    for i in 0..4 {
+                        let top = get_top(&grid);
+                        if top == last_bottom {
+                            // println!("(l) found matching left edge: {} {}", tile.id, top);
+                            this_tile = Some(tile.clone());
+                            this_grid = Some(grid.clone())
+                        }
+                        grid = rotate_grid(&grid);
+                    }
+                    let mut grid = tile.grid_data.map.clone();
+                    grid = flip_grid(&grid, true, false);
+                    for i in 0..4 {
+                        let top = get_top(&grid);
+                        if top == last_bottom {
+                            // println!("(f) found matching left edge: {} {}", tile.id, top);
+                            this_tile = Some(tile.clone());
+                            this_grid = Some(grid.clone());
+                        }
+                        grid = rotate_grid(&grid);
                     }
                 }
-                let tile = possible_tile.unwrap();
-                // let grid = possible_grid.unwrap();
-                let mut grid = flip_grid(&tile.grid_data.map, flip_x, flip_y);
+                let this_tile = this_tile.unwrap();
+                let this_grid = this_grid.unwrap();
 
-                print_grid(&grid);
+                add_to_main_grid(&mut filled_map, &offset, &this_grid);
+                // print_grid(&filled_map);
 
-                // let mut left = get_left(&grid);
-                // let mut rots = 0;
-                // while left != last_right {
-                //     grid = rotate_grid(&grid);
-                //     left = get_left(&grid);
-                //     rots += 1;
-                //     if rots > 4 {
-                //         grid = flip_grid(&grid, true, false);
-                //     }
-                //     if rots > 8 {
-                //         grid = flip_grid(&grid, false, true);
-                //     }
-                //     if rots > 12 {
-                //         grid = flip_grid(&grid, true, true);
-                //     }
-                // }
+                last_right = get_right(&this_grid);
+                last_bottom = get_bottom(&this_grid);
+                used_tiles.insert(this_tile.id);
+            // let i = 0;
+            } else {
+                let mut this_tile = None;
+                let mut this_grid = None;
+                for tile in &tiles {
+                    if used_tiles.contains(&tile.id) {
+                        // println!("Skipping {}", tile.id);
+                        continue;
+                    }
+                    let mut grid = tile.grid_data.map.clone();
+                    for i in 0..4 {
+                        let left = get_left(&grid);
+                        if left == last_right {
+                            // println!("(l) found matching left edge: {} {}", tile.id, left);
+                            this_tile = Some(tile.clone());
+                            this_grid = Some(grid.clone())
+                        }
+                        grid = rotate_grid(&grid);
+                    }
+                    let mut grid = tile.grid_data.map.clone();
+                    grid = flip_grid(&grid, true, false);
+                    for i in 0..4 {
+                        let left = get_left(&grid);
+                        if left == last_right {
+                            // println!("(f) found matching left edge: {} {}", tile.id, left);
+                            this_tile = Some(tile.clone());
+                            this_grid = Some(grid.clone());
+                        }
+                        grid = rotate_grid(&grid);
+                    }
+                }
+                let this_tile = this_tile.unwrap();
+                let this_grid = this_grid.unwrap();
 
-                add_to_main_grid(&mut filled_map, &offset, &grid);
-                last_right = get_right(&grid);
-                used_tiles.insert(tile.id);
-                println!("{:?} {:?}", &offset, tile.id);
-                // debug_print(&tile.grid_data.map, &Orientation::Default, 0);
-                print_grid(&filled_map);
+                add_to_main_grid(&mut filled_map, &offset, &this_grid);
+                // print_grid(&filled_map);
+
+                last_right = get_right(&this_grid);
+                used_tiles.insert(this_tile.id);
                 let i = 0;
-                //     .iter()
-                //     .filter(|t| !used_tiles.contains(&t.id))
-                //     .filter(|t| {
-                //
-                //
-                //
-                //         t.edges.contains(&last_right)
-                //                 || t.edges_flip_x.contains(&last_right)
-                //                 || t.edges_flip_y.contains(&last_right)
-                //                 || t.edges_flip_both.contains(&last_right))
-                //     })
-                //     .map(|t| t.clone())
-                //     .collect();
-
-                // lastly look left if we aren't at the start of a row
-                // let left_pos = map.get(&Point::new(x - 1, y)).unwrap();
-                // let left_tile = lookup.get(&left_pos.id).unwrap();
-                // let left_edges = tiles_to_edges.get(&left_tile.id).unwrap();
-                //
-                // let right_edge =
-                //     &left_tile.get_side(&Right, &left_pos.orientation, left_pos.rotation);
-                // println!("right edge: {}", right_edge);
-                //
-                // let (_, this_tile) = lookup
-                //     .iter()
-                //     .filter(|e| e.1.has_edge(right_edge).is_some())
-                //     .next()
-                //     .unwrap();
-                // let this_tile_orientation = this_tile.has_edge(right_edge).unwrap();
-                // // let edge_match = left_edges.iter().find(|e| e.edge == *right_edge).unwrap();
-                //
-                // // let this_tile = lookup.get(&edge_match.other_id).unwrap();
-                // let required_orientation = get_required_orientation(right_edge, this_tile);
-                // let which_side = this_tile.which_side(&required_orientation, right_edge);
-                // let required_rotations = get_required_rotations(&which_side, &Left);
-                //
-                // let position = MapPosition {
-                //     id: this_tile.id,
-                //     orientation: required_orientation.clone(),
-                //     rotation: required_rotations,
-                // };
-                // println!("{:?} {:?}", here, position);
-                // map.insert(here, position);
-                // // debug_print(&this_tile.grid_data.map, &Orientation::Default, 0);
-                // // debug_print(
-                // //     &this_tile.grid_data.map,
-                // //     &Orientation::Default,
-                // //     required_rotations,
-                // // );
-                // debug_print(
-                //     &this_tile.grid_data.map,
-                //     &required_orientation,
-                //     required_rotations,
-                // );
             }
         }
     }
-    let i = 0;
+    // let i = 0;
+    print_grid(&filled_map, 10);
+    let len = filled_map.iter().map(|e| e.0.x).max().unwrap();
+
+    for y in 0..=len {
+        for x in 0..=len {
+            if x % 10 == 0 {
+                let offset_x = x % 10 * 10;
+                let col1 = Point::new(offset_x + x, y);
+                // println!("clear {:?}", col1);
+
+                let col2 = Point::new(offset_x + x + 9, y);
+                // println!("clear {:?}", col2);
+
+                filled_map.insert(col1, '*');
+                filled_map.insert(col2, '*');
+            }
+            if y % 10 == 0 {
+                let offset_y = y % 10 * 10;
+                let row1 = Point::new(x, offset_y + y);
+                // println!("clear {:?}", row1);
+
+                let row2 = Point::new(x, offset_y + y + 9);
+                // println!("clear {:?}", row2);
+
+                filled_map.insert(row1, '*');
+                filled_map.insert(row2, '*');
+            }
+        }
+    }
+
+    print_grid(&filled_map, 10);
+
+    let mut grid_edges_removed = HashMap::new();
+    add_to_grid_with_filter(&mut grid_edges_removed, &filled_map, '*');
+
+    print_grid(&grid_edges_removed, 1000);
+
+    let raw_seamonster = "\
+                  #
+#    ##    ##    ###
+ #  #  #  #  #  #   ".split('\n').map(String::from).collect::<Vec<String>>();
+    let seamonster_grid = GridData::parse_input(raw_seamonster);
 }
 
 fn add_to_main_grid(
@@ -340,27 +265,62 @@ fn add_to_main_grid(
         for x in 0..=len {
             filled_map.insert(
                 Point::new(offset.x + x, offset.y + y),
-                grid.get(&Point::new(x, y)).unwrap().clone(),
+                *grid.get(&Point::new(x, y)).unwrap(),
             );
         }
     }
 }
 
-fn print_grid(grid: &HashMap<Point, char>) {
+fn add_to_grid_with_filter(
+    target_grid: &mut HashMap<Point, char>,
+    grid: &HashMap<Point, char>,
+    skip_char: char,
+) {
+    let len = grid.iter().map(|e| e.0.x).max().unwrap();
+    let mut new_y = 0;
+    let mut new_x = 0;
+    let mut inserted_row = false;
+    for y in 0..=len {
+        new_x = 0;
+        inserted_row = false;
+        for x in 0..=len {
+            let src_char = *grid.get(&Point::new(x, y)).unwrap();
+            if src_char == skip_char {
+                continue;
+            }
+
+            target_grid.insert(Point::new(new_x, new_y), src_char);
+            inserted_row = true;
+            new_x += 1;
+        }
+        if inserted_row {
+            new_y += 1;
+        }
+    }
+}
+
+fn print_grid(grid: &HashMap<Point, char>, tile_size: i32) {
     let max_x = grid.iter().map(|e| e.0.x).max().unwrap();
     let max_y = grid.iter().map(|e| e.0.y).max().unwrap();
 
     for y in 0..=max_y {
-        for x in 0..=max_x {
-            print!(
-                "{}",
-                grid.get(&Point {
-                    x: x as i32,
-                    y: y as i32
-                })
-                .unwrap()
-            )
+        if y % tile_size == 0 {
+            println!();
         }
+        for x in 0..=max_x {
+            if x % tile_size == 0 {
+                print!(" ");
+            }
+            let found_entry = grid.get(&Point {
+                x: x as i32,
+                y: y as i32,
+            });
+
+            let print_c = if let Some(c) = found_entry { *c } else { ' ' };
+
+            print!("{}", print_c)
+        }
+
         println!();
     }
 }
@@ -831,26 +791,26 @@ mod tests {
                 char_idx += 1;
             }
         }
-        print_grid(&grid);
+        print_grid(&grid, 10);
 
         let mut rotated_grid = grid.clone();
         for r in 1..4 {
             println!("rotate {}", r);
             rotated_grid = rotate_grid(&rotated_grid);
-            print_grid(&rotated_grid);
+            print_grid(&rotated_grid, 10);
         }
 
         println!();
 
-        print_grid(&grid);
+        print_grid(&grid, 10);
         println!("no flip");
-        print_grid(&flip_grid(&grid, false, false));
+        print_grid(&flip_grid(&grid, false, false), 10);
         println!("x flip");
-        print_grid(&flip_grid(&grid, true, false));
+        print_grid(&flip_grid(&grid, true, false), 10);
         println!("y flip");
-        print_grid(&flip_grid(&grid, false, true));
+        print_grid(&flip_grid(&grid, false, true), 10);
         println!("x y flip");
-        print_grid(&flip_grid(&grid, true, true));
+        print_grid(&flip_grid(&grid, true, true), 10);
 
         println!();
         println!("top: {}", get_top(&grid));
