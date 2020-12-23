@@ -31,7 +31,7 @@ mod day21;
 mod util;
 
 fn main() {
-    let _day = 20;
+    let _day = 21;
 
     let mut days: HashMap<i32, fn()> = HashMap::new();
     days.insert(1, day01::run);
