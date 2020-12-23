@@ -6,7 +6,6 @@ use itertools::Itertools;
 use lazy_static::lazy_static;
 use regex::Regex;
 use std::collections::{HashMap, HashSet};
-use std::ops::Index;
 
 pub fn run() {
     let tiles = read_lines_split_by_double_newline(20);
@@ -89,11 +88,10 @@ pub fn run() {
     let mut used_tiles: HashSet<i64> = HashSet::new();
     for y in 0..12 {
         for x in 0..12 {
-            println!("Used entries: {}", used_tiles.len());
+            // println!("Used entries: {}", used_tiles.len());
             // println!("Used entries: {:?}", used_tiles);
             let offset = Point::new(x * 10, y * 10);
             // println!("full grid entry: {:?}", offset);
-            let here = Point::new(x, y);
             // println!("here: {:?}", here);
             // println!("last right: {}", last_right);
             // println!("last bottom: {}", last_bottom);
@@ -211,7 +209,7 @@ pub fn run() {
         }
     }
     // let i = 0;
-    print_grid(&filled_map, 10);
+    // print_grid(&filled_map, 10);
     let len = filled_map.iter().map(|e| e.0.x).max().unwrap();
 
     for y in 0..=len {
@@ -241,25 +239,25 @@ pub fn run() {
         }
     }
 
-    print_grid(&filled_map, 10);
+    // print_grid(&filled_map, 10);
 
     let mut grid_edges_removed = HashMap::new();
     add_to_grid_with_filter(&mut grid_edges_removed, &filled_map, '*');
 
-    print_grid(&grid_edges_removed, 1000);
+    // print_grid(&grid_edges_removed, 1000);
 
     let mut all_found_seamonsters = Vec::new();
 
 
     let mut grid = grid_edges_removed.clone();
-    for i in 0..4 {
+    for _ in 0..4 {
         let found_seamonsters = find_seamonsters(&grid);
         all_found_seamonsters.push(found_seamonsters);
         grid = rotate_grid(&grid);
     }
     let mut grid = grid_edges_removed.clone();
     grid = flip_grid(&grid, true, false);
-    for i in 0..4 {
+    for _ in 0..4 {
         let found_seamonsters = find_seamonsters(&grid);
         all_found_seamonsters.push(found_seamonsters);
         grid = rotate_grid(&grid);
@@ -382,58 +380,6 @@ fn print_grid(grid: &HashMap<Point, char>, tile_size: i32) {
     }
 }
 
-fn debug_print(grid: &HashMap<Point, char>, orientation: &Orientation, rotations: u8) {
-    let y_range: Vec<usize> = if orientation == &Orientation::Default || orientation == &FlipY {
-        (0..=9).into_iter().collect()
-    } else {
-        (0..=9).rev().into_iter().collect()
-    };
-
-    let x_range: Vec<usize> = if orientation == &Orientation::Default || orientation == &FlipX {
-        (0..=9).into_iter().collect()
-    } else {
-        (0..=9).rev().into_iter().collect()
-    };
-
-    let mut flipped_grid = HashMap::new();
-
-    let mut new_y = 0;
-    let mut new_x = 0;
-    for y in y_range.clone() {
-        new_x = 0;
-        for x in x_range.clone() {
-            flipped_grid.insert(
-                Point::new(new_x, new_y),
-                *grid.get(&Point::new(x as i32, y as i32)).unwrap(),
-            );
-            new_x += 1
-        }
-        new_y += 1;
-    }
-
-    let mut rotated_grid = flipped_grid.clone();
-    for _ in 0..rotations {
-        println!("rotate 1");
-        rotated_grid = rotate_grid(&rotated_grid)
-    }
-
-    for y in 0..=9 {
-        for x in 0..=9 {
-            print!(
-                "{}",
-                rotated_grid
-                    .get(&Point {
-                        x: x as i32,
-                        y: y as i32
-                    })
-                    .unwrap()
-            )
-        }
-        println!();
-    }
-    println!()
-}
-
 fn rotate_grid(grid: &HashMap<Point, char>) -> HashMap<Point, char> {
     let mut rotated_grid = HashMap::new();
 
@@ -511,67 +457,6 @@ fn get_right(grid: &HashMap<Point, char>) -> String {
     right.iter().join("")
 }
 
-fn grid_has_edge(grid: &HashMap<Point, char>, edge: &String) -> bool {
-    let top = get_top(grid) == *edge;
-    let bottom = get_bottom(grid) == *edge;
-    let left = get_left(grid) == *edge;
-    let right = get_right(grid) == *edge;
-
-    top || bottom || left || right
-}
-
-fn get_required_rotations(current_side: &Side, target_side: &Side) -> u8 {
-    let order = vec![Top, Right, Bottom, Left];
-    let current_index = order
-        .iter()
-        .position(|s| s == current_side)
-        .expect("has to be there");
-    let target_index = order
-        .iter()
-        .position(|s| s == target_side)
-        .expect("has to be there");
-
-    if current_index == target_index {
-        0
-    } else if (current_index + 1) % 4 == target_index {
-        1
-    } else if (current_index + 2) % 4 == target_index {
-        2
-    } else if (current_index + 3) % 4 == target_index {
-        3
-    } else {
-        unreachable!()
-    }
-}
-
-fn get_required_orientation(edge: &String, tile: &Tile) -> Orientation {
-    if tile.edges.contains(edge) {
-        Orientation::Default
-    } else if tile.edges_flip_x.contains(edge) {
-        FlipX
-    } else if tile.edges_flip_y.contains(edge) {
-        FlipY
-    } else
-    //if tile.edges_flip_both.contains(edge) {
-    //FlipBoth
-    //} else
-    {
-        unreachable!()
-    }
-}
-
-fn getOrientation(flip_x: bool, flip_y: bool) -> Orientation {
-    if flip_x && flip_y {
-        Orientation::FlipBoth
-    } else if flip_x {
-        Orientation::FlipX
-    } else if flip_y {
-        Orientation::FlipY
-    } else {
-        Orientation::Default
-    }
-}
-
 #[derive(PartialEq, Eq, Debug, Clone)]
 struct Tile {
     id: i64,
@@ -586,88 +471,6 @@ struct Tile {
     right: String,
 }
 
-impl Tile {
-    fn top(&self, orientation: &Orientation) -> String {
-        match orientation {
-            Orientation::Default => self.top.clone(),
-            Orientation::FlipX => self.bottom.clone(),
-            Orientation::FlipY => self.top.chars().rev().join(""),
-            Orientation::FlipBoth => self.bottom.chars().rev().join(""),
-        }
-    }
-
-    fn bottom(&self, orientation: &Orientation) -> String {
-        match orientation {
-            Orientation::Default => self.bottom.clone(),
-            Orientation::FlipX => self.top.clone(),
-            Orientation::FlipY => self.bottom.chars().rev().join(""),
-            Orientation::FlipBoth => self.top.chars().rev().join(""),
-        }
-    }
-
-    fn left(&self, orientation: &Orientation) -> String {
-        match orientation {
-            Orientation::Default => self.left.clone(),
-            Orientation::FlipX => self.left.chars().rev().join(""),
-            Orientation::FlipY => self.right.clone(),
-            Orientation::FlipBoth => self.right.chars().rev().join(""),
-        }
-    }
-
-    fn right(&self, orientation: &Orientation) -> String {
-        match orientation {
-            Orientation::Default => self.right.clone(),
-            Orientation::FlipX => self.right.chars().rev().join(""),
-            Orientation::FlipY => self.left.clone(),
-            Orientation::FlipBoth => self.left.chars().rev().join(""),
-        }
-    }
-
-    fn get_side(&self, target_side: &Side, orientation: &Orientation, rotations: u8) -> String {
-        let order = vec![Top, Right, Bottom, Left];
-        let current_index = order
-            .iter()
-            .position(|s| s == target_side)
-            .expect("has to be there");
-
-        let target_side = order
-            .get(((current_index as i16 - rotations as i16) % 4).abs() as usize)
-            .unwrap();
-
-        match target_side {
-            Top => self.top(&orientation),
-            Bottom => self.bottom(&orientation),
-            Left => self.left(&orientation),
-            Right => self.right(&orientation),
-        }
-    }
-
-    fn which_side(&self, orientation: &Orientation, side: &str) -> Side {
-        if self.top(orientation) == side {
-            Top
-        } else if self.bottom(orientation) == side {
-            Bottom
-        } else if self.left(orientation) == side {
-            Left
-        } else if self.right(orientation) == side {
-            Right
-        } else {
-            unreachable!()
-        }
-    }
-
-    fn has_edge(&self, edge: &String) -> Option<Orientation> {
-        if self.edges.contains(edge) {
-            Some(Orientation::Default)
-        } else if self.edges_flip_x.contains(edge) {
-            Some(Orientation::FlipX)
-        } else if self.edges_flip_y.contains(edge) {
-            Some(FlipY)
-        } else {
-            None
-        }
-    }
-}
 
 fn which_side_is_this(grid: &HashMap<Point, char>, side: &str) -> Side {
     if get_top(grid) == side {
@@ -832,7 +635,7 @@ fn parse_tile(lines: Vec<String>) -> Tile {
 #[cfg(test)]
 mod tests {
     use crate::day20::{
-        debug_print, find_seamonsters, flip_grid, get_bottom, get_left, get_right, get_top,
+        find_seamonsters, flip_grid, get_bottom, get_left, get_right, get_top,
         print_grid, rotate_grid,
     };
     use crate::util::{GridData, Point};
