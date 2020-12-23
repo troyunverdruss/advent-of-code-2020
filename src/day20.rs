@@ -248,11 +248,68 @@ pub fn run() {
 
     print_grid(&grid_edges_removed, 1000);
 
+    let mut all_found_seamonsters = Vec::new();
+
+
+    let mut grid = grid_edges_removed.clone();
+    for i in 0..4 {
+        let found_seamonsters = find_seamonsters(&grid);
+        all_found_seamonsters.push(found_seamonsters);
+        grid = rotate_grid(&grid);
+    }
+    let mut grid = grid_edges_removed.clone();
+    grid = flip_grid(&grid, true, false);
+    for i in 0..4 {
+        let found_seamonsters = find_seamonsters(&grid);
+        all_found_seamonsters.push(found_seamonsters);
+        grid = rotate_grid(&grid);
+    }
+
+    let max_found = all_found_seamonsters.iter().max().unwrap();
+
+    let all_hashes = grid_edges_removed.iter().filter(|e| *e.1 == '#').count();
+    let rough_waters = all_hashes as i32 - (max_found * 15);
+    println!("Part 2: {}", rough_waters);
+}
+
+fn find_seamonsters(grid: &HashMap<Point, char>) -> i32 {
     let raw_seamonster = "\
-                  #
-#    ##    ##    ###
- #  #  #  #  #  #   ".split('\n').map(String::from).collect::<Vec<String>>();
+..................#.
+#....##....##....###
+.#..#..#..#..#..#..."
+        .split('\n')
+        .map(String::from)
+        .collect::<Vec<String>>();
     let seamonster_grid = GridData::parse_input(raw_seamonster);
+    let seamoster_points = seamonster_grid
+        .map
+        .iter()
+        .filter(|e| *e.1 == '#')
+        .map(|e| e.0.clone())
+        .collect::<Vec<Point>>();
+
+    let len = grid.iter().map(|e| e.0.x).max().unwrap();
+
+    let mut found_seamonsters = 0;
+    for y in 0..=len {
+        for x in 0..=len {
+            let origin = Point::new(x, y);
+            let mut matches = Vec::new();
+            for sp in &seamoster_points {
+                let test_point = Point::new(origin.x + sp.x, origin.y + sp.y);
+                if let Some(val) = grid.get(&test_point) {
+                    if val == &'#' {
+                        matches.push(true);
+                    }
+                }
+            }
+            if matches.iter().all(|v| v == &true) && matches.len() == seamoster_points.len() {
+                found_seamonsters += 1;
+            }
+        }
+    }
+
+    found_seamonsters
 }
 
 fn add_to_main_grid(
@@ -775,9 +832,10 @@ fn parse_tile(lines: Vec<String>) -> Tile {
 #[cfg(test)]
 mod tests {
     use crate::day20::{
-        debug_print, flip_grid, get_bottom, get_left, get_right, get_top, print_grid, rotate_grid,
+        debug_print, find_seamonsters, flip_grid, get_bottom, get_left, get_right, get_top,
+        print_grid, rotate_grid,
     };
-    use crate::util::Point;
+    use crate::util::{GridData, Point};
     use std::collections::HashMap;
 
     #[test]
@@ -817,5 +875,35 @@ mod tests {
         println!("bottom: {}", get_bottom(&grid));
         println!("left: {}", get_left(&grid));
         println!("right: {}", get_right(&grid));
+    }
+
+    #[test]
+    fn test_find_seamonsters() {
+        let lines = "\
+..................#.
+#....##....##....###
+.#..#..#..#..#..#...
+....................
+....................
+....................
+....................
+....................
+....................
+....................
+....................
+....................
+....................
+....................
+....................
+####################
+####################
+####################
+....................
+...................."
+            .split('\n')
+            .map(String::from)
+            .collect::<Vec<String>>();
+        let gd = GridData::parse_input(lines);
+        assert_eq!(2, find_seamonsters(&gd.map));
     }
 }
