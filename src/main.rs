@@ -59,6 +59,7 @@ fn main() {
     days.insert(22, day22::run);
 
 
+
     if let Some(f) = days.get(&_day) {
         let now = Instant::now();
         f();
