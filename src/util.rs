@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::ops::Add;
 
 pub(crate) mod inputs;
 
@@ -11,6 +12,14 @@ pub struct Point {
 impl Point {
     pub fn new(x: i32, y: i32) -> Point {
         Point {x, y}
+    }
+}
+
+impl Add for Point {
+    type Output = Self;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Point::new(self.x + rhs.x, self.y + rhs.y)
     }
 }
 
