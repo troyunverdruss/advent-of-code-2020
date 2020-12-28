@@ -37,7 +37,7 @@ fn solver(lines: &[String], decoder_chip_instruction: DecoderChipInstruction) ->
         all_ones |= BASE.pow(pow);
     }
     let all_ones = all_ones;
-    println!("All ones: {}", all_ones);
+    // println!("All ones: {}", all_ones);
 
     let mut mask: Vec<BitVal> = Vec::new();
     let mut memory: HashMap<i64, i64> = HashMap::new();
@@ -116,13 +116,13 @@ fn v2_decoder(
     }
 
     // Overwrite all bits set to 1 in the mask with a 1 value
-    println!("mem_addr: {:b}", mem_addr);
+    // println!("mem_addr: {:b}", mem_addr);
     let mut base_addr = mem_addr;
     mask.iter().filter(|bv| bv.val == 1).for_each(|bv| {
         base_addr |= BASE.pow(bv.bit as u32);
     });
     let base_addr = base_addr;
-    println!("base addr: {:b}", base_addr);
+    // println!("base addr: {:b}", base_addr);
 
 
     for permutation in find_permutations(floating_bits.len()) {
@@ -132,21 +132,21 @@ fn v2_decoder(
                 bit: *floating_bits.get(index).unwrap(),
                 val: *permutation.get(index).unwrap(),
             };
-            println!("bit_val: {:?}", bit_val);
+            // println!("bit_val: {:?}", bit_val);
             new_addr = change_bit(
                 all_ones,
                 new_addr,
                 &bit_val,
             );
-            println!("  Changed 1 bit: {:b}", new_addr);
+            // println!("  Changed 1 bit: {:b}", new_addr);
         }
-        println!("New addr: {:b}", new_addr);
+        // println!("New addr: {:b}", new_addr);
         target_addrs.push(new_addr);
     }
 
     // Write to all the addresses
     for addr in target_addrs {
-        println!("Inserting {} into {}", new_val, addr);
+        // println!("Inserting {} into {}", new_val, addr);
         let mem_val = memory.entry(addr).or_insert(0);
         *mem_val = new_val;
     }

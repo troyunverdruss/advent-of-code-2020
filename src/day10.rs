@@ -44,13 +44,13 @@ fn part_1(adapters: &[i32]) -> i32 {
 }
 
 // TODO Tribonnaci?
-// Dynamic programming? 
+// Dynamic programming?
 // counting sort?
 // https://www.reddit.com/r/adventofcode/comments/ka8z8x/2020_day_10_solutions/gfal951/?utm_source=share&utm_medium=ios_app&utm_name=iossmf&context=3
 fn part_2(adapters: &Vec<i32>) -> i64 {
     let mut memo = HashMap::new();
     let result = solver(&0, &adapters[..], &mut memo).unwrap();
-    println!("memo size: {}", memo.len());
+    // println!("memo size: {}", memo.len());
     result
 }
 

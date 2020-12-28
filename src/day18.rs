@@ -23,7 +23,7 @@ fn part2(lines: &Vec<String>) -> i64 {
         .map(|l| part_2_reducer(l))
         .map(|s| {
             let v = s.parse::<i64>().unwrap();
-            println!("{}", v);
+            // println!("{}", v);
             v
         })
         .sum();
@@ -87,8 +87,8 @@ fn part_1_solver(line: &str) -> i64 {
 
     let mut stack: VecDeque<Value> = VecDeque::new();
     for value in values {
-        println!("Stack: {:?}", stack);
-        println!("Value: {:?}", value);
+        // println!("Stack: {:?}", stack);
+        // println!("Value: {:?}", value);
         match value {
             Number(number_val) => handle_number(&mut stack, number_val),
             Operator(_) => stack.push_back(value),
@@ -157,7 +157,7 @@ fn part_2_reducer(line: &str) -> String {
         || RE_ADD.is_match(&line_copy)
         || RE_MUL.is_match(&line_copy)
     {
-        println!("Line: {}", line_copy);
+        // println!("Line: {}", line_copy);
         if RE_PARENS.is_match(&line_copy) {
             let captures = RE_PARENS.captures(&line_copy);
             let match_str = captures.unwrap().get(1).map_or("", |m| m.as_str());
@@ -191,8 +191,8 @@ fn part_2_reducer(line: &str) -> String {
         }
     }
 
-    println!("Result: {}", line_copy);
-    println!();
+    // println!("Result: {}", line_copy);
+    // println!();
     line_copy
 }
 

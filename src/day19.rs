@@ -181,7 +181,7 @@ fn part_2_trick(messages: Vec<String>, mut rules_map: &mut HashMap<i32, Rule>) -
         let mut valid_segments = vec![];
         let mut checked_rule = vec![];
         let mut front = true;
-        println!("{}, {}, {}", &m[..], m_len, segment_len);
+        // println!("{}, {}, {}", &m[..], m_len, segment_len);
         checked_rule.push("42");
         if rule_42.contains(&m[0..segment_len]) {
             valid_segments.push(true);
@@ -198,7 +198,7 @@ fn part_2_trick(messages: Vec<String>, mut rules_map: &mut HashMap<i32, Rule>) -
                 } else {
                     let remaining_segments = segments - valid_segments.len();
                     if remaining_segments > valid_segments.len()-1{
-                        println!("{} segments, {} remaining", segments, remaining_segments);
+                        // println!("{} segments, {} remaining", segments, remaining_segments);
                         valid_segments.push(false);
                         checked_rule.push("invalid");
                     }
@@ -223,8 +223,8 @@ fn part_2_trick(messages: Vec<String>, mut rules_map: &mut HashMap<i32, Rule>) -
             valid_segments.push(false);
         }
 
-        println!("{:?}", valid_segments);
-        println!("{:?}", checked_rule);
+        // println!("{:?}", valid_segments);
+        // println!("{:?}", checked_rule);
 
         if valid_segments.iter().all(|v| v == &true) {
             // println!("valid: {}", m);
@@ -233,76 +233,7 @@ fn part_2_trick(messages: Vec<String>, mut rules_map: &mut HashMap<i32, Rule>) -
             // println!("invalid: {}", m);
         }
 
-        //
-        //
-        //
-        //
-        // let mut valid = true;
-        // for i in (0..(2* one_third)).step_by(len_42) {
-        //     let m_slice = &m[i..(i + len_42)];
-        //     if !rule_42.contains(m_slice) {
-        //         valid = false;
-        //     }
-        //     // println!("{}..{}: {} [valid: {}]", i, i + len_42 - 1, m_slice, valid_8);
-        // }
-        // for i in ((2* one_third)..(3*one_third)).step_by(len_31) {
-        //     let m_slice = &m[i..(i + len_31)];
-        //     if !rule_31.contains(m_slice) {
-        //         valid = false;
-        //     }
-        //     // println!("{}..{}: {} [valid: {}]", i, i + len_42 - 1, m_slice, valid_8);
-        // }
-        //
-        //
-
-
-        // // First 2/3 should be rule 8
-        //
-        // let mut valid_8 = false;
-        // if m_len % len_42 == 0 {
-        //     println!("Check 8");
-        //     valid_8 = true;
-        //     for i in (0..m_len).step_by(len_42) {
-        //         let m_slice = &m[i..(i + len_42)];
-        //         if !rule_42.contains(m_slice) {
-        //             valid_8 = false;
-        //         }
-        //         println!("{}..{}: {} [valid: {}]", i, i + len_42 - 1, m_slice, valid_8);
-        //     }
-        // }
-        //
-        // // Check rule 11
-        // let mut valid_11 = false;
-        // let len_42_plus_31 = len_42 + len_31;
-        // if m_len % (len_42_plus_31) == 0 {
-        //     println!("Check 11");
-        //     valid_11 = true;
-        //     // first half should be 42s
-        //     for i in (0..(m_len / 2)).step_by(len_42) {
-        //         let m_slice_42 = &m[i..(i + len_42)];
-        //         if !rule_42.contains(m_slice_42) {
-        //             valid_11 = false;
-        //         }
-        //         println!("{}..{}: {} [valid: {}]", i, i + len_42 - 1, m_slice_42, valid_11);
-        //     }
-        //
-        //     // second half should be 31s
-        //     for i in ((m_len / 2)..m_len).step_by(len_31) {
-        //         let m_slice_31 = &m[i..(i + len_31)];
-        //         if !rule_31.contains(m_slice_31) {
-        //             valid_11 = false;
-        //         }
-        //         println!("{}..{}: {} [valid: {}]", i, i + len_31 - 1, m_slice_31, valid_11);
-        //     }
-        // }
-
-        // if valid {
-        //     valid_count += 1;
-        //     println!("valid: {}", &m[..]);
-        // } else {
-        //     println!("invalid: {}", &m[..]);
-        // }
-        println!();
+        // println!();
     }
     valid_count
 }
