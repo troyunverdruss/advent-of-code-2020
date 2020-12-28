@@ -21,11 +21,11 @@ fn part1(grid_data: &GridData, dims: i32) -> usize {
     });
 
     for loop_id in 0..6 {
-        println!(
-            "Start loop {}, count: {}",
-            loop_id,
-            grid.values().filter(|v| v == &&'#').count()
-        );
+        // println!(
+        //     "Start loop {}, count: {}",
+        //     loop_id,
+        //     grid.values().filter(|v| v == &&'#').count()
+        // );
         let existing_keys = grid.keys().map(|k| k.to_owned()).collect::<Vec<Point4>>();
         let mut keys_for_this_cycle = HashSet::new();
         for k in existing_keys {
@@ -43,11 +43,11 @@ fn part1(grid_data: &GridData, dims: i32) -> usize {
         for u in updates {
             grid.insert(u.0, u.1);
         }
-        println!(
-            "End loop {}, count: {}",
-            loop_id,
-            grid.values().filter(|v| v == &&'#').count()
-        );
+        // println!(
+        //     "End loop {}, count: {}",
+        //     loop_id,
+        //     grid.values().filter(|v| v == &&'#').count()
+        // );
     }
 
     grid.values().filter(|v| v == &&'#').count()

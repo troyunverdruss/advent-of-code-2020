@@ -1,6 +1,5 @@
 use crate::util::inputs::day_input;
-// use z3::{Config, Context, ast, SatResult};
-// use z3::ast::{Int, Ast};
+use itertools::Itertools;
 
 // TODO chinese remainder theorem? yes but how
 pub fn run() {
@@ -14,7 +13,8 @@ pub fn run() {
         min_bus.0 * min_bus.1
     );
 
-    part2(&lines);
+    let timestamp = part2(&lines);
+    println!("Part 2: {}", timestamp);
 }
 
 fn part1(lines: &[String]) -> (usize, usize) {
@@ -49,29 +49,47 @@ fn part2(lines: &[String]) -> i64 {
         .map(|t| (t.0, t.1.parse::<usize>().unwrap()))
         .collect::<Vec<(usize, usize)>>();
 
-    println!("{:?}", buses_with_index);
+    // println!("{:?}", buses_with_index);
 
+    let buses: Vec<usize> = buses_with_index.iter().map(|t| t.1).collect();
     let remainders: Vec<usize> = buses_with_index.iter().map(|t| t.0).collect();
-    let divisors: Vec<usize> = buses_with_index.iter().map(|t| t.1).collect();
 
-    println!("{:?}", divisors);
-    println!("{:?}", remainders);
-    // 56422801821895 too low
-    // correct! 840493039281088
-    // 896915841102983 too high
+    let mut sorted_pairs = buses
+        .iter()
+        .zip(remainders)
+        .sorted_by(|a, b| a.0.cmp(b.0))
+        .map(|e| (*e.0, e.1))
+        .collect::<Vec<(usize, usize)>>();
 
-    // used chinese remainder theorem solver in python :/
-    // from sympy.ntheory.modular import crt
-    // crt([41, 37, 379, 23, 13, 17, 29, 557, 19], [0, 35, 41, 49, 54, 58, 70, 72, 91])
+    let mut t = 0;
+    let mut step_size = 1;
+    let (mut bus, mut rem) = sorted_pairs.pop().unwrap();
+    loop {
+        if (t + rem) % bus == 0 {
+            // println!("{} % {} = {}", t, bus, rem);
+            if sorted_pairs.is_empty() {
+                // println!("Found solution: {}", t);
+                break;
+            }
+            // println!("Old step size {}", step_size);
+            step_size *= bus;
+            // println!("New step size {}", step_size);
 
-    0
+            let pair = sorted_pairs.pop().unwrap();
+            bus = pair.0;
+            rem = pair.1;
+            // println!("Next search pair: {:?}", pair);
+        }
+
+        t += step_size
+    }
+
+    t as i64
 }
 
 #[cfg(test)]
 mod tests {
     use crate::day13::{part1, part2};
-    // use z3::{Config, Context, ast, SatResult, Sort, Symbol};
-    // use z3::ast::{Ast, Real, Bool, Int};
 
     #[test]
     fn test_part1() {
@@ -96,42 +114,4 @@ mod tests {
         let result = part2(&lines);
         assert_eq!(3417, result);
     }
-
-    // #[test]
-    // fn test_z3() {
-    //     let cfg = Config::new();
-    //     let ctx = Context::new(&cfg);
-    //
-    //     let x = ctx.
-    //
-    //     let solver = z3::Solver::new(&ctx);
-    //     solver.assert(&Bool::try_from());
-    //
-    //     let y = Real::new_const(&ctx, "f");
-    //
-    //
-    //
-    //
-    //     let x = ast::Int::new_const(&ctx, "x");
-    //     let mut y = ast::Int::from_i64(&ctx, 13);
-    //     let xmody = x.modulo(&y);
-    //     let zero: Int = ast::Int::from_i64(&ctx, 0);
-    //     let www = y.sub_assign(&xmody);
-    //     y.
-    //     y.unary_minus(xmody);
-    //
-    //     let f = z3::FuncDecl::new(&ctx, "f", &[&Sort::int(&ctx)], &Sort::int(&ctx));
-    //
-    //     f.apply(&[1])
-    //
-    //     let bv = ast::BV::new_const(&ctx, "x", 32);
-    //     solver.assert(&bv._eq(&ast::BV::from_i64(&ctx, -3, 32)));
-    //
-    //     let x = ast::Int::from_bv(&bv, true);
-    //
-    //     assert_eq!(solver.check(), SatResult::Sat);
-    //     let model = solver.get_model().unwrap();
-    //
-    //     assert_eq!(-3, model.eval(&x).unwrap().as_i64().unwrap());
-    // }
 }

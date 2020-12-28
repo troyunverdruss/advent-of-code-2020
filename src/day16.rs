@@ -105,7 +105,7 @@ fn part_2(rules_str: &Vec<&str>, my_ticket: &String, nearby_tickets: &Vec<&str>,
                 let c_key_str = c_key.to_owned();
                 let entry = candidates.entry(c_key.to_owned()).or_default();
                 if already_found {
-                    println!("entry: {:?}", entry.clone());
+                    // println!("entry: {:?}", entry.clone());
                     entry.remove(results.get(key).unwrap());
                 }
                 if entry.len() == 1 {
